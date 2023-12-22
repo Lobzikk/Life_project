@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"slices"
 	"strconv"
+	"time"
 )
 
 // Getting all the cell's neighbours to decide its fate later.
@@ -102,4 +103,12 @@ func (w *World) NextGen() {
 	}
 	w.Map = slices.Clone(NextGenMap)
 	NextGenMap = nil // deleting the supporting matrix to avoid memory leaks
+}
+
+// Change the world's state every n ms/s/min/h (run as goroutine)
+func (w *World) TickingWorldGen(duration time.Duration) {
+	ticker := time.Tick(duration)
+	for range ticker {
+		w.NextGen()
+	}
 }
